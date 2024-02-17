@@ -29,7 +29,7 @@ class OrganizationViewSet(ModelViewSet):
 
 
 class AppointmentViewSet(ModelViewSet):
-    queryset = Appointment.objects.select_related('doctor_set', 'user_set').order_by('-id')
+    queryset = Appointment.objects.select_related('doctor', 'user').order_by('-id')
     serializer_class = AppointmentSerializer
     pagination_class = DefaultPagination
     filter_backends = [DjangoFilterBackend, filters.SearchFilter]

@@ -28,7 +28,12 @@ class DoctorSerializer(serializers.ModelSerializer):
         return res 
 
 class AppointmentSerializer(serializers.ModelSerializer):
+    doctor = serializers.CharField()
+    patient_fullname = serializers.SerializerMethodField()
+
     class Meta():
         model = Appointment
         fields ='__all__'
 
+    def get_patient_fullname(self, obj):
+        return obj.user.get_full_name()
