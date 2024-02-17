@@ -21,6 +21,9 @@ from django.conf.urls.static import static
 from rest_framework.schemas import get_schema_view
 from django.views.generic import TemplateView
 
+from django.views.static import serve
+from django.urls import re_path
+
 base_url = 'api/v1/'
 
 urlpatterns = [
@@ -35,6 +38,14 @@ urlpatterns = [
         description='Guide for the REST API'
         ), name='api_schema'),
 ]
+
+# FOR serving media files
+urlpatterns += [
+    re_path(r'^media/(?P<path>.*)$', serve, {
+        'document_root': settings.MEDIA_ROOT,
+    }),
+]
+
 
 if settings.DEBUG:
     urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
