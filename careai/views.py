@@ -74,9 +74,12 @@ def analyze_symptoms(request):
 @api_view(['POST'])
 def analyze_mri_image(request):
     if request.method == 'POST':
-        # Read the image file from the request
-        file = request.FILES['image']
-        predicted_class, message = predict_image(file)
+        try:
+            # Read the image file from the request
+            file = request.FILES['image']
+            predicted_class, message = predict_image(file)
+        except Exception as e:   
+            return Response({"error": str(e)})
         
         doctor_list = []
         if predicted_class != 0:
