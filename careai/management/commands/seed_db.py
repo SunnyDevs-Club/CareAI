@@ -9,6 +9,12 @@ class Command(BaseCommand):
 
         org1 = Organization.objects.create(name='CareAi')
 
+        # Clean data
+        for d in Doctor.objects.all():
+            d.delete()            
+        for el in Category.objects.all():
+            el.delete()
+
         category1 = Category.objects.create(name='Dermatologist')
         category2 = Category.objects.create(name='Gastroenterologist')
         category3 = Category.objects.create(name='Allergist')
@@ -23,7 +29,8 @@ class Command(BaseCommand):
         # Предполагаем, что существует организация с id 1
         organization_id = org1.id
 
-        for category in Category.objects.all():
+        categories = Category.objects.all()
+        for category in categories:
             for i in range(2):  # Создаем 2 доктора для примера
                 Doctor.objects.create(
                     full_name=f"{category.name} Doctor {i+1}",
