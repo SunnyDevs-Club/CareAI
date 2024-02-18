@@ -39,7 +39,8 @@ urlpatterns = [
         ), name='api_schema'),
 ]
 
-# FOR serving media files
+# FOR serving media files on render.com
+# Found solution on github.com: https://stackoverflow.com/questions/63078717/retrieve-django-media-files-from-render-com-disk
 urlpatterns += [
     re_path(r'^media/(?P<path>.*)$', serve, {
         'document_root': settings.MEDIA_ROOT,

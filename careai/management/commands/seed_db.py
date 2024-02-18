@@ -9,34 +9,28 @@ class Command(BaseCommand):
 
         org1 = Organization.objects.create(name='CareAi')
 
-        category1 = Category.objects.create(name='Neurologist')
-        category2 = Category.objects.create(name='Cardiologist')
-        category3 = Category.objects.create(name='Dentist')
-        category4 = Category.objects.create(name='Therapist')
-        category5 = Category.objects.create(name='Surgeon')
-        category6 = Category.objects.create(name='Neuropathologist')
-
-        # Категории
-        categories = {
-            "Neurologist": category1.id,
-            "Cardiologist": category2.id,
-            "Dentist": category3.id,
-            "Therapist": category4.id,
-            "Surgeon": category5.id,
-            "Neuropathologist": category6.id
-        }
+        category1 = Category.objects.create(name='Dermatologist')
+        category2 = Category.objects.create(name='Gastroenterologist')
+        category3 = Category.objects.create(name='Allergist')
+        category4 = Category.objects.create(name='Urologist')
+        category5 = Category.objects.create(name='Infectious Disease Specialist')
+        category6 = Category.objects.create(name='Orthopedist')
+        category7 = Category.objects.create(name='Neurologist')
+        category8 = Category.objects.create(name='Cardiologist')
+        category9 = Category.objects.create(name='Pulmonologist')
+        category10 = Category.objects.create(name='General Practitioner')
 
         # Предполагаем, что существует организация с id 1
         organization_id = org1.id
 
-        for category_name, category_id in categories.items():
+        for category in Category.objects.all():
             for i in range(2):  # Создаем 2 доктора для примера
                 Doctor.objects.create(
-                    full_name=f"{category_name} Doctor {i+1}",
-                    category=Category.objects.get(id=category_id),
-                    organization=Organization.objects.get(id=organization_id),
+                    full_name=f"{category.name} Doctor {i+1}",
+                    category_id=category.id,
+                    organization_id=organization_id,
                     rating=4.5 + i * 0.1,  # Пример рейтинга
-                    description=f"Description {category_name} Doctor {i+1}",
+                    description=f"Description {category.name} Doctor {i+1}",
                     price=1000.00 + i * 500,  # Пример цены
                     phone_number=f"+123456789{i}",
                     photo="/doctor_photos/doc.jpeg",  # Укажите путь к фотографии

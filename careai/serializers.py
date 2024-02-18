@@ -28,12 +28,24 @@ class DoctorSerializer(serializers.ModelSerializer):
         return res 
 
 class AppointmentSerializer(serializers.ModelSerializer):
-    doctor = serializers.CharField()
+    doctor_id = serializers.IntegerField()
+    doctor = serializers.CharField(read_only=True)
     patient_fullname = serializers.SerializerMethodField()
-
+    doctor_category = serializers.SerializerMethodField()
+    doctor_price = serializers.SerializerMethodField()
     class Meta():
         model = Appointment
         fields ='__all__'
 
     def get_patient_fullname(self, obj):
         return obj.user.get_full_name()
+    
+    def get_doctor_category(self, obj):
+        return obj.doctor.category.name
+    
+    def get_doctor_price(self, obj):
+        return str(obj.doctor.price)
+
+
+class SymptomSerializer(serializers.Serializer):
+    symptoms = serializers.CharField()
