@@ -14,4 +14,5 @@ router.register(r'appointments', views.AppointmentViewSet, basename='appointment
 urlpatterns = [
     path('',include(router.urls)),
     path('symptom-analysis/', views.analyze_symptoms),
+    path('mri-analysis/', views.analyze_mri_image),
 ]

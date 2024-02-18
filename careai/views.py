@@ -15,6 +15,7 @@ from .serializers import (DoctorSerializer, OrganizationSerializer, AppointmentS
 
 
 from ai.disease import symptom_analysis 
+from ai.mri import predict_image
 
 class DoctorViewSet(ModelViewSet):
     queryset = Doctor.objects.select_related('organization', 'category').order_by('-id')
@@ -69,3 +70,19 @@ def analyze_symptoms(request):
         doctor_serializer = DoctorSerializer(doctors, many=True)
 
         return Response({'disease_category': specialization, 'disease':disease, 'recommended_doctors': doctor_serializer.data})
+    
+@api_view(['POST'])
+def analyze_mri_image(request):
+    if request.method == 'POST':
+        # Read the image file from the request
+        file = request.FILES['image']
+        predicted_class, message = predict_image(file)
+        
+        doctor_list = []
+        if predicted_class != 0:
+            doctors = Doctor.objects.select_related('category').filter(category__name='Neurologist').all()
+            doctor_serializer = DoctorSerializer(doctors, many=True)
+            doctor_list = doctor_serializer.data
+
+        # Return the predicted class name as JSON response
+        return Response({'patient_condition': message, 'recommended_doctors': doctor_list})
