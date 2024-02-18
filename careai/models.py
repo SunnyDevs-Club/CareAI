@@ -45,10 +45,10 @@ class Appointment(models.Model):
     doctor = models.ForeignKey(Doctor, related_name='appointments',  on_delete=models.PROTECT)
     user = models.ForeignKey(User, related_name='appointments', on_delete=models.PROTECT)
     date_time = models.DateTimeField()
-    symptoms_desc = models.TextField()
+    symptoms_desc = models.TextField(null=True, blank=True)
     mri_image = models.ImageField(upload_to='mri_images/', null=True, blank=True)
     x_ray_image = models.ImageField(upload_to='xray_images/', null=True, blank=True)
-    status = models.CharField(max_length=20, choices=STATUS_CHOICES)
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='P')
     
     updated_at = models.DateTimeField(auto_now=True)
     created_at = models.DateTimeField(auto_now_add=True)

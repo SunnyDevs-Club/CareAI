@@ -4,12 +4,17 @@ from django.shortcuts import render
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.viewsets import ModelViewSet, ReadOnlyModelViewSet
 from rest_framework import filters
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
 
 from .models import Doctor, Organization, Category, Appointment
-from .serializers import DoctorSerializer, OrganizationSerializer, AppointmentSerializer, CategorySerializer
 from .pagination import DefaultPagination
 from .filters import DoctorFilter, AppointmentFilter
+from .serializers import (DoctorSerializer, OrganizationSerializer, AppointmentSerializer,
+                        CategorySerializer, SymptomSerializer)
 
+
+from ai.disease import symptom_analysis 
 
 class DoctorViewSet(ModelViewSet):
     queryset = Doctor.objects.select_related('organization', 'category').order_by('-id')
@@ -43,3 +48,24 @@ class CategoryViewSet(ModelViewSet):
     pagination_class = DefaultPagination
     filter_backends = [DjangoFilterBackend, filters.SearchFilter]
     search_fields = ['name',]
+
+
+'''
+{
+"symptoms": "temperature is high"
+}
+'''
+@api_view(['POST'])
+def analyze_symptoms(request):
+    if request.method == 'POST':
+        serializer = SymptomSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        data = serializer.validated_data
+        symptoms = data.get('symptoms', None)
+        disease, specialization = symptom_analysis(symptoms)
+        print(disease, specialization)
+       
+        doctors = Doctor.objects.select_related('category').filter(category__name__icontains=specialization.lower()).all()
+        doctor_serializer = DoctorSerializer(doctors, many=True)
+
+        return Response({'disease_category': specialization, 'disease':disease, 'recommended_doctors': doctor_serializer.data})
